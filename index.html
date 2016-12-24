@@ -14,6 +14,17 @@
                 padding-bottom: 20px;
             }
         </style>
+
+        <style>
+          .CodeMirror { height: auto; width:100%; border: 1px solid #ddd; }
+          .CodeMirror-scroll { max-height: 200px; }
+          .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
+        </style>
+
+        <script src="lib/codemirror.js"></script>
+        <link rel="stylesheet" href="lib/codemirror.css">
+        <script src="mode/javascript/javascript.js"></script>
+
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="css/main.css">
 
@@ -36,7 +47,7 @@
           </div>
         <div class="row">
             <div class="col-md-3">
-                <h3>challenge #1<br><small>puzzle by riyasat</small></h3><hr>
+                <h3>challenge #1</h3><hr>
                 <p>Your first challenge is to write a program that adds two numbers together.
                     The input is in a,b and the result must be stored in c</p>
                 <hr>
@@ -47,9 +58,13 @@
                 <button type="button" class="editorButton">submit</button>
                 </h3>
                 <hr>
-                <div class="form-group">
-                    <textarea class="form-control" rows="20" id="comment"></textarea>
-                </div>
+
+                <textarea id="editor" ></textarea>
+
+                <h3>memory</h3>
+                <hr>
+
+
             </div>
             <div class="col-md-3">
                 <h3>instruction set</h3><hr>
@@ -82,6 +97,14 @@
         </div>
         </div>
 
+        <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+            lineNumbers: true,
+            lineWrapping: true,
+            fixedGutter: false
+
+        });
+        </script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
         <script src="js/vendor/bootstrap.min.js"></script>
