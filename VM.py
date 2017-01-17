@@ -7,7 +7,10 @@ class VM():
 		self.memSize = memSize
 		self.memory = [0]*memSize
 		self.pc = 0
+		self.memPointer = 0
 		self.formattedCode = ""
+		self.finished = False
+		self.code = []
 	# Load code into memory and reset program counter
 	def loadCode(self, codeInput):
 		self.formattedCode = codeInput
@@ -15,10 +18,10 @@ class VM():
 		code = re.sub(r'\n',' ',codeInput)
 		code = re.sub(r'[^\d\s]','',code)
 		code = re.sub(r'\s+',' ',code)
+		code = re.sub(r'\s*$','',code)
+		code = re.sub(r'^\s*','',code)
 		code = code.split(" ")
-		# Move into memory
-		for i,cell in enumerate(code):
-			self.memSet(i,int(cell))
+		self.code = map(lambda x: int(x),code)
 		# reset program counter
 		self.pc = 0
 	# Set a certain memory cell
@@ -41,11 +44,14 @@ class VM():
 		self.pc = address
 	# Step foward 1 command
 	def step(self):
+		if self.pc+2 > self.memSize-1:
+			self.finished = True
+			return
 		# Get addresses
 		curr = self.pc
-		A = self.memGet(curr)
-		B = self.memGet(curr+1)
-		C = self.memGet(curr+2)
+		A = self.code[curr]
+		B = self.code[curr+1]
+		C = self.code[curr+2]
 		# sub: B = B-A
 		self.memSet(B,self.memGet(B)-self.memGet(A))
 		# leq
@@ -73,14 +79,36 @@ class VM():
 			if i % rowSize == 0:
 				sys.stdout.write('\n')
 				sys.stdout.write("{0:<3}  ".format(i))
-			sys.stdout.write("{0:<2}".format(self.memGet(i)))
+			sys.stdout.write("{0:<3}".format(self.memGet(i)))
 		sys.stdout.write('\n')
+
+	# Runs the machine until it hits end of memory by default
+	# Can be given the "for" paramters to specify a number of steps
+	def run(**params):
+		# Run for some amount of steps
+		if "for" in params:
+			steps = params["for"]
+			if steps < 0 or steps > self.memSize:
+				raise NameError("Invalid number of steps")
+			for i in range(0,steps):
+				if self.finished == True:
+					break
+				self.step()
+		# Default
+		else:
+			while self.finished == False:
+				self.step()
+
 
 if __name__ == "__main__":
 	machine = VM(9)
-	machine.loadCode("3 4 6 #This does some fun\n 7 7 7")
+	machine.loadCode("0 2 3 2 1 6 0 0 0")
+	machine.memSet(0,6)
+	machine.memSet(1,4)
+	machine.memSet(2,0)
 	machine.printMem(3)
 	machine.step()
 	machine.printMem(3)
-
+	machine.step()
+	machine.printMem(3)
 
