@@ -9,6 +9,8 @@
 |jump         |n          |add n to the current program counter               |
 |newMemSeg    | n s       |create a new memory segment with name n and size s |
 |setMemSeg    | n         | sets n to be the default memory address           |
+|loadMem      | a A B C ..| stores an array of data A B C ... into memory starting at address a |
+|skip         | a         | skips next line if a != 0                         |
 
 # Cmp Reference Table
 | b  | action          |
@@ -32,6 +34,8 @@ on startup this is called "main" but can be set to any memory segment via the `s
 # Registers
 These act as tempory places to hold data but effectivly are just like memory. 
 you can use r0 to r7.
+by default all values in registers are immediate values but if you would like a register to be interperted as a address simply do R0:
+this does not support multiple memorgy segments though, only current. 
 
 # Functions
 to set up a small bit of code to run on a function call do
@@ -48,7 +52,7 @@ end
 ```
 and then call it as such
 ```
-runFunction(quickAdd)
+runFunction quickAdd
 ```
 
 Functions are designed to be for small bits of code and to allow for conditional braching so do note

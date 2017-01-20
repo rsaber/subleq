@@ -14,24 +14,38 @@ def subleqClean(codeInput):
 def subleqCompile(rawCode):
 	code = subleqClean(rawCode)
 	if len(code) % 3 != 0:
-		raise NameError("Compilation Failed: incomplete subleq statement present")
+		raise NameError("Compilation Failed, Incomplete subleq statement present")
 	commandList = []
 	for i in range(0,len(code)/3):
 		index = i*3
 		commandList.append((code[index],code[index+1],code[index+2]))
 	result = []
+	# copy code into memory
+	curr = 0
 	for command in commandList:
-		result.append("ldi A "+str(command[0]))
-		result.append("ldi B "+str(command[1]))
-		# convert between line numbers and instructions
-		result.append("ldi C "+str(10*(int(command[2])-1)))
-		result.append("ld A A")          
-		result.append("ld B B")
-		result.append("ld C C")
-		result.append("negi A ")          
-		result.append("add B A ")
-		result.append("ldi D 0 ")
-		result.append("brle B D C")
+		temp = [str(command[0]),str(command[1]),str(command[2])]
+		line = 'memload '+str(curr)+" "+" ".join(temp)
+		curr+=3
+		result.append(line)
+	# write interaction code
+	# A = 0
+	result.append('set r0 0')
+	result.append('set r3 0')
+	result.append('define leq')
+	result.append('    set r0 r2:')
+	result.append('    set r3 1')
+	result.append('end')
+	for command in commandList:
+		# B = A + 1
+		result.append('add r0 1 r1')
+		# C = B + 1
+		result.append('add r1 1 r2')
+		result.append('sub r1: r0: r1:')
+		result.append('cmp r1: <= 0 leq')
+		result.append('skip r3')
+		result.append('add r2 1 r0')
+		result.append('set r3 0')
+
 	return "\n".join(result)
 
 if __name__ == "__main__":

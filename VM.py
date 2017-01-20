@@ -15,6 +15,7 @@ def tokenise(text):
 	result = re.sub(r'\s*$',r'',result)
 	return result.split(" ")
 
+
 class MemorySegment():
 	def __init__(self,name,size):
 		self.name = name
@@ -22,7 +23,15 @@ class MemorySegment():
 		self.data = [0]*size
 	def write(self, address, data):
 		if address >= 0 and address < self.size-1:
-			self.data[address] = data
+			if type(data) == list:
+				if address + len(data) > self.size-1:
+					self.raiseError("Attempt to write to beyond memory bounds")
+				c = 0
+				for i in range(address,address+len(data)):
+					self.data[i] = data[c]
+					c = c + 1
+			else:
+				self.data[address] = data
 		else:
 			self.raiseError("Attempt to access non-existant memory")
 	def read(self, address):
@@ -44,6 +53,7 @@ class VM():
 		self.memorySegments = {}
 		self.memorySegments['main'] = MemorySegment('main', size)
 		self.memory = self.memorySegments['main']
+		self.maxCycles = maxCycles
 		self.size = size
 		self.code = []
 		self.pc = 0
@@ -79,6 +89,9 @@ class VM():
 			self.raiseError("Virtual Machine has no code loaded in to run")
 		while self.finished == False:
 			self.incCycles()
+			if self.skip == True:
+				self.skip = False
+				continue
 			if self.code[self.pc] == "self.end([''])":
 				eval(self.code[self.pc])
 			elif self.inDefinition != None:
@@ -107,6 +120,9 @@ class VM():
 		b = params[1]
 		c = params[2]
 		self.setVal(c, self.getVal(a) + self.getVal(b))
+	def memLoad(self, params):
+		address = params[0]
+		self.setVal(address, params[1:])
 	def cmp(self, params):
 		a = self.getVal(params[0])
 		b = params[1]
@@ -126,8 +142,11 @@ class VM():
 		if sub not in self.functions:
 			self.raiseError("Attempt to call non existant function")
 		for line in self.functions[sub]:
+			if self.skip == True:
+				self.skip = False
+				continue
 			eval(line)
-	def incCycles():
+	def incCycles(self):
 		self.cycles = self.cycles + 1
 		if self.cycles > self.maxCycles:
 			raise ValueError("Machine surpassed max cycles, possible infinite loop")
@@ -167,6 +186,10 @@ class VM():
 			memseg.write(a, data)
 		else:
 			self.raiseError("Command refused input: " + param)
+	def skip(self, params):
+		data = getVal(params[0])
+		if data != 0:
+			self.skip = True
 	def newMemSeg(self, params):
 		name = params[0]
 		size = int(params[1])
@@ -183,6 +206,7 @@ class VM():
 		self.functions[params[0]] = []
 	def end(self, params):
 		self.inDefinition = None
+
 	# Get the value of a paramter
 	def getVal(self, param):
 		# reference
@@ -198,7 +222,20 @@ class VM():
 				memseg = self.memorySegments[n]
 			address = memseg.read(a)
 			return memseg.read(address)
-		# register
+		# register address
+		elif match(param, r'^[rR]\d\:$'):
+			try:
+				num = param.split('r')[1]
+				num = num.split(':')[0]
+			except:
+				num = param.split('R')[1]
+				num = num.split(':')[0]
+			if int(num) > self.numRegisters-1:
+				self.raiseError('Attempt to access non-existant register')
+			reg = param.upper()
+			reg = reg.split(":")[0]
+			return self.memory.read(self.registers[reg])
+		# register normal
 		elif match(param, r'^[rR]\d$'):
 			try:
 				num = param.split('r')[1]
@@ -234,6 +271,7 @@ class VM():
 if __name__ == "__main__":
 	machine = VM(1024, 1000)
 	machine.loadCode('''
+
 	''')
 	machine.run()
 	print(machine.registers)
