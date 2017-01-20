@@ -93,3 +93,9 @@ set r0 5
 set r1 5
 add r0 r1 0:
 ```
+
+A roundabout way of getting the data in cell 5 of memory segment main, into register 0
+```
+set 0: 5
+set r0 *0:
+```
