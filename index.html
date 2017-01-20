@@ -39,7 +39,7 @@
                     inHeading.style.opacity = 1
                     memHeading.style.opacity = 0.1
                     challHeading.style.opacity = 0.1
-                    elem.innerHTML = "<div class=\"col-md-3\"> <h5><strong>subleq A B C</strong></h5> </div> <div class=\"col-md-7 col-md-offset-2\"> <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>address C</strong></p> <p> Every set of 3 numbers is treated like a subleq instruction. All other characters are ignored, so feel free to comment </p> <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5> </div>"
+                    elem.innerHTML = "<div class=\"col-md-3\"> <h5><strong>subleq A B C</strong></h5> </div> <div class=\"col-md-7 col-md-offset-2\"> <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>line C</strong></p> <p> Have one instruction per line, you can say <code>subleq 1 2 3</code> if you like or just put in 3 numbers per line. All other characters other then digits are ignored, so feel free to comment! </p> <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5> </div>"
                 }
                 if(s == "memory"){
                     inHeading.style.opacity = 0.1
@@ -62,47 +62,45 @@
 
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     </head>
-    <body style="overflow: scroll">
+    <body style="overflow: scroll;">
         <div id='stars'></div>
         <div id='stars2'></div>
         <div id='stars3'></div>
         <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-right">subleq</h1>
-                <h4 class="text-right">a series of puzzles</h4>
-                <h5 class="text-right">written by <a href='http://www.riyasatsaber.com'>riyasat saber</a></h5>
-                <hr><br><br>
-            </div>
-          </div>
-        <div class="row">
-            <div class="col-md-6">
-                <h3>editor
-                <button type="button" class="editorButton">run</button>
-                <button type="button" class="editorButton">submit</button>
-                </h3>
-                <hr>
-
-                <textarea id="editor" ></textarea>
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div id="mem" class="col-md-3" onclick="switchTo('memory')" style="text-align: center; opacity: 0.1"><h3> Memory </h3></div>
-                    <div id="in" class="col-md-5" onclick="switchTo('instructions')" style="text-align: center; opacity: 0.1"><h3> Instructions </h3></div>
-                    <div id="chall" class="col-md-4" onclick="switchTo('challanges')" style="text-align: center; opacity: 1"><h3> Challange </h3></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-right">subleq</h1>
+                    <h4 class="text-right">a series of puzzles</h4>
+                    <h5 class="text-right">written by <a href='http://www.riyasatsaber.com'>riyasat saber</a></h5>
+                    <hr><br><br>
                 </div>
-                <hr>
-                <div id="sideContent">
-                <table class="table">
-                    <h3>challenge #1</h3><hr>
-                    <p>Your first challenge is to write a program that adds two numbers together.
-                        The input is at address 0 and 1 and the result must be stored at address 1</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>editor
+                    <button type="button" class="editorButton">run</button>
+                    <button type="button" class="editorButton">submit</button>
+                    </h3>
                     <hr>
+                    <textarea id="editor" ></textarea>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div id="mem" class="col-md-3" onclick="switchTo('memory')" style="text-align: center; opacity: 0.1"><h3> Memory </h3></div>
+                        <div id="in" class="col-md-5" onclick="switchTo('instructions')" style="text-align: center; opacity: 0.1"><h3> Instructions </h3></div>
+                        <div id="chall" class="col-md-4" onclick="switchTo('challanges')" style="text-align: center; opacity: 1"><h3> Challange </h3></div>
+                    </div>
+                    <hr>
+                    <div id="sideContent">
+                        <h3>challenge #1</h3><hr>
+                        <p>Your First challenge is to write a program that adds two numbers together.
+                            The input is at address 0 and 1 and the result must be stored at address 1</p>
+                        <hr>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-        <div class="row">
+        <div class="row" style="padding-top: 2%;">
             <h4 class='text-center'>List of Challenges</h4>
             <h4 class='text-center'>
                 <strong>1</strong>
@@ -115,8 +113,6 @@
                 <a href='http://www.google.com'>8</a>
             </h4>
         </div>
-        </div>
-
         <script>
         var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
             lineNumbers: true,
