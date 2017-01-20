@@ -78,6 +78,7 @@ class VM():
 		if len(self.code) == 0:
 			self.raiseError("Virtual Machine has no code loaded in to run")
 		while self.finished == False:
+			self.incCycles()
 			if self.code[self.pc] == "self.end([''])":
 				eval(self.code[self.pc])
 			elif self.inDefinition != None:

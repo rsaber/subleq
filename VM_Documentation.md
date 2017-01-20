@@ -61,6 +61,7 @@ Functions are designed to be for small bits of code and to allow for conditional
 
 In future there may be a full stack set up that allows for recurrsion and functions to have no limitations on them but at the moment the code is run seperately in it's own code space meaning jumping is impossible. 
 Furthermore the current function being run is stored in a single variable rather then on a stack so recurrsion is impossible as well. 
+
 # Cycles
 The machine keeps track of its' own cycles, at the creation of the machiens you specify what is the max cycle count on the machine. 
 
