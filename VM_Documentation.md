@@ -56,11 +56,15 @@ Functions are designed to be for small bits of code and to allow for conditional
     DO NOT DEFINE SUBS INSIDE OF SUBS FOR THE LOVE OF GOD
 
     ALSO YOU CAN NOT JUMP INSIDE OF A SUB
-    
+
     You should be able to call a function from another function although this is not well tested
 
 In future there may be a full stack set up that allows for recurrsion and functions to have no limitations on them but at the moment the code is run seperately in it's own code space meaning jumping is impossible. 
 Furthermore the current function being run is stored in a single variable rather then on a stack so recurrsion is impossible as well. 
+# Cycles
+The machine keeps track of its' own cycles, at the creation of the machiens you specify what is the max cycle count on the machine. 
+
+This is to prevent infinite loops, once the cycle count is hit the program will stop. setting this to 1000 usually allows for a ample amount of code to be run and a infinite loop to be caught. 
 
 # Example code
 Code to add 5 and 6 together and store it at memory address 0 in the main memory segment
