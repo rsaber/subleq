@@ -33,27 +33,6 @@ class MemorySegment():
 	def raiseError(self, msg):
 		message = "[Memory Segment: "+self.name+"] "+msg
 		raise ValueError(message)
-# Instruction Set
-#    set a b               : gets data from b and stores it in a [a/=immediate]
-#    sub a b c             : sets c to be equal to a - b
-#    cmp a b c sub         : compares a and c with condition b and if true performs the sub
-#         a <= c
-#         a > c
-#         a = c
-#    add a b c             : sets c to a + b
-#   runFunction [name]     : runs the function [name]
-#   jump n                 : add n to the current program counter
-
-# functions
-#    to set up a small bit of code to run on a true comparion just use this command
-#    define [name]
-#    	code ...
-#    end
-# how to not use functions
-#    DO NOT DEFINE SUBS INSIDE OF SUBS FOR THE LOVE OF GOD
-#    ALSO YOU CAN NOT JUMP INSIDE OF A SUB
-#    you should be able to call a function from another function although this is
-#    not well tested
 
 class VM():
 	# Initalise the VM
@@ -71,12 +50,16 @@ class VM():
 		self.finished = False
 		self.functions = {}
 		self.inDefinition = None
+		self.numRegisters = 8
 		self.registers = {
 			'R0' : 0,
 			'R1' : 0,
 			'R2' : 0,
 			'R3' : 0,
-			'R4' : 0
+			'R4' : 0,
+			'R5' : 0,
+			'R6' : 0,
+			'R7' : 0
 		}
 		self.cycles = 0
 
@@ -163,6 +146,12 @@ class VM():
 			memseg.write(address, data)
 		# register
 		elif match(param, r'^[rR]\d$') :
+			try:
+				num = param.split('r')[1]
+			except:
+				num = param.split('R')[1]
+			if int(num) > self.numRegisters-1:
+				self.raiseError('Attempt to access non-existant register')
 			self.registers[param.upper()] = data
 		# address
 		elif match(param, r'^\d+\:.*$'):
@@ -209,7 +198,13 @@ class VM():
 			address = memseg.read(a)
 			return memseg.read(address)
 		# register
-		elif match(param, r'^[rR]\d$') :
+		elif match(param, r'^[rR]\d$'):
+			try:
+				num = param.split('r')[1]
+			except:
+				num = param.split('R')[1]
+			if int(num) > self.numRegisters-1:
+				self.raiseError('Attempt to access non-existant register')
 			return self.registers[param.upper()]
 		# address
 		elif match(param, r'^\d+\:.*$'):
@@ -231,13 +226,13 @@ class VM():
 		line = self.code[self.pc].split('.')[1]
 		line = re.sub(r'[\[\]\(\)\',]',r' ',line)
 		line = re.sub(r'\s+',r' ',line)
+		line = re.sub(r'\s*$',r'',line)
 		message = msg + " ("+line+")"
 		raise ValueError(message)
 
 if __name__ == "__main__":
-	machine = VM(1024)
+	machine = VM(1024, 1000)
 	machine.loadCode('''
-
 	''')
 	machine.run()
 	print(machine.registers)
