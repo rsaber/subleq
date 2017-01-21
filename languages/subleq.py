@@ -24,31 +24,40 @@ def subleqCompile(rawCode):
 	curr = 0
 	for command in commandList:
 		temp = [str(command[0]),str(command[1]),str(command[2])]
-		line = 'memload '+str(curr)+" "+" ".join(temp)
+		line = 'memLoad '+str(curr)+" "+" ".join(temp)
 		curr+=3
 		result.append(line)
 	# write interaction code
 	# A = 0
 	result.append('set r0 0')
+	# Flags = 0
 	result.append('set r3 0')
+	result.append('set r5 0')
+	# maxMem
+	result.append('set r4 '+str(len(code)-1))
 	result.append('define leq')
 	result.append('    set r0 r2:')
 	result.append('    set r3 1')
 	result.append('end')
-	for command in commandList:
-		# B = A + 1
-		result.append('add r0 1 r1')
-		# C = B + 1
-		result.append('add r1 1 r2')
-		result.append('sub r1: r0: r1:')
-		result.append('cmp r1: <= 0 leq')
-		result.append('skip r3')
-		result.append('add r2 1 r0')
-		result.append('set r3 0')
+	result.append('define quit')
+	result.append('    set r5 1')
+	result.append('end')
+	# B = A + 1
+	result.append('add r0 1 r1')
+	# C = B + 1
+	result.append('add r1 1 r2')
+	result.append('sub *r1: *r0: *r1:')
+	result.append('cmp *r1: <= 0 leq')
+	result.append('skip r3')
+	result.append('add r2 1 r0')
+	result.append('set r3 0')
+	result.append('cmp r0 > r4 quit')
+	result.append('skip r5')
+	result.append('jump -8')
 
 	return "\n".join(result)
 
 if __name__ == "__main__":
-	code = "0 1 3\n 0 2 0\n 1 2 0"
+	code = "3 4 6\n 7 7 7\n"
 	result = subleqCompile(code)
 	print(result)

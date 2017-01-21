@@ -28,10 +28,10 @@ class MemorySegment():
 					self.raiseError("Attempt to write to beyond memory bounds")
 				c = 0
 				for i in range(address,address+len(data)):
-					self.data[i] = data[c]
+					self.data[i] = int(data[c])
 					c = c + 1
 			else:
-				self.data[address] = data
+				self.data[address] = int(data)
 		else:
 			self.raiseError("Attempt to access non-existant memory")
 	def read(self, address):
@@ -72,6 +72,7 @@ class VM():
 			'R7' : 0
 		}
 		self.cycles = 0
+		self.skipCurr = False
 
 	# Load in some code
 	def loadCode(self, code):
@@ -89,10 +90,10 @@ class VM():
 			self.raiseError("Virtual Machine has no code loaded in to run")
 		while self.finished == False:
 			self.incCycles()
-			if self.skip == True:
-				self.skip = False
-				continue
-			if self.code[self.pc] == "self.end([''])":
+			print(self.code[self.pc])
+			if self.skipCurr == True:
+				self.skipCurr = False
+			elif self.code[self.pc] == "self.end([''])":
 				eval(self.code[self.pc])
 			elif self.inDefinition != None:
 				self.functions[self.inDefinition].append(self.code[self.pc])
@@ -109,6 +110,7 @@ class VM():
 	def set(self, params):
 		a = params[0]
 		b = params[1]
+		print("setting " + a + " to " + str(self.getVal(b)))
 		self.setVal(a, self.getVal(b))
 	def sub(self, params):
 		a = params[0]
@@ -119,6 +121,7 @@ class VM():
 		a = params[0]
 		b = params[1]
 		c = params[2]
+		print(c)
 		self.setVal(c, self.getVal(a) + self.getVal(b))
 	def memLoad(self, params):
 		address = params[0]
@@ -127,6 +130,7 @@ class VM():
 		a = self.getVal(params[0])
 		b = params[1]
 		c = self.getVal(params[2])
+		print(str(a) + " " + b + " " + str(c))
 		sub = [params[3]]
 		if b == '>' and a > c:
 			self.runFunction(sub)
@@ -135,15 +139,15 @@ class VM():
 		elif b == '=' and a == c:
 			self.runFunction(sub)
 
-		if b != '=' and b != '<' and b != '>':
+		if b != '=' and b != '<=' and b != '>':
 			self.raiseError("Invalid comparator")
 	def runFunction(self, params):
 		sub = params[0]
 		if sub not in self.functions:
 			self.raiseError("Attempt to call non existant function")
 		for line in self.functions[sub]:
-			if self.skip == True:
-				self.skip = False
+			if self.skipCurr == True:
+				self.skipCurr = False
 				continue
 			eval(line)
 	def incCycles(self):
@@ -164,6 +168,35 @@ class VM():
 				memseg = self.memorySegments[n]
 			address = memseg.read(a)
 			memseg.write(address, data)
+
+		# register reference
+		elif match(param, r'\*[rR]\d:$'):
+			try:
+				num = param.split('r')[1]
+				num = num.split(':')[0]
+			except:
+				num = param.split('R')[1]
+				num = num.split(':')[0]
+			if int(num) > self.numRegisters-1:
+				self.raiseError('Attempt to access non-existant register')
+			reg = param.upper()
+			reg = reg.split(":")[0]
+			reg = reg.split("*")[1]
+			address = self.memory.read(self.registers[reg])
+			return self.memory.write(address, data)
+		# register address
+		elif match(param, r'^[rR]\d\:$'):
+			try:
+				num = param.split('r')[1]
+				num = num.split(':')[0]
+			except:
+				num = param.split('R')[1]
+				num = num.split(':')[0]
+			if int(num) > self.numRegisters-1:
+				self.raiseError('Attempt to access non-existant register')
+			reg = param.upper()
+			reg = reg.split(":")[0]
+			return self.memory.write(self.registers[reg], data)	
 		# register
 		elif match(param, r'^[rR]\d$') :
 			try:
@@ -187,9 +220,9 @@ class VM():
 		else:
 			self.raiseError("Command refused input: " + param)
 	def skip(self, params):
-		data = getVal(params[0])
+		data = self.getVal(params[0])
 		if data != 0:
-			self.skip = True
+			self.skipCurr = True
 	def newMemSeg(self, params):
 		name = params[0]
 		size = int(params[1])
@@ -206,6 +239,9 @@ class VM():
 		self.functions[params[0]] = []
 	def end(self, params):
 		self.inDefinition = None
+	def memLoad(self, params):
+		a = self.getVal(params[0])
+		self.memory.write(a, params[1:])
 
 	# Get the value of a paramter
 	def getVal(self, param):
@@ -222,6 +258,21 @@ class VM():
 				memseg = self.memorySegments[n]
 			address = memseg.read(a)
 			return memseg.read(address)
+		# register reference
+		elif match(param, r'\*[rR]\d:$'):
+			try:
+				num = param.split('r')[1]
+				num = num.split(':')[0]
+			except:
+				num = param.split('R')[1]
+				num = num.split(':')[0]
+			if int(num) > self.numRegisters-1:
+				self.raiseError('Attempt to access non-existant register')
+			reg = param.upper()
+			reg = reg.split(":")[0]
+			reg = reg.split("*")[1]
+			address = self.memory.read(self.registers[reg])
+			return self.memory.read(address)
 		# register address
 		elif match(param, r'^[rR]\d\:$'):
 			try:
@@ -271,7 +322,29 @@ class VM():
 if __name__ == "__main__":
 	machine = VM(1024, 1000)
 	machine.loadCode('''
-
+memLoad 0 3 4 6
+memLoad 3 7 7 7
+set r0 0
+set r3 0
+set r5 0
+set r4 5
+define leq
+    set r0 r2:
+    set r3 1
+end
+define quit
+    set r5 1
+end
+add r0 1 r1
+add r1 1 r2
+sub *r1: *r0: *r1:
+cmp *r1: <= 0 leq
+skip r3
+add r2 1 r0
+set r3 0
+cmp r0 > r4 quit
+skip r5
+jump -8
 	''')
 	machine.run()
-	print(machine.registers)
+	print(machine.memory.data)

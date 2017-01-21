@@ -34,7 +34,9 @@ on startup this is called "main" but can be set to any memory segment via the `s
 # Registers
 These act as tempory places to hold data but effectivly are just like memory. 
 you can use r0 to r7.
-by default all values in registers are immediate values but if you would like a register to be interperted as a address simply do R0:
+by default all values in registers are immediate values but if you would like a register to be interperted as a address simply do `R0:`
+you can further do `*R0:` to use the value in the address pointed to by the register as a reference
+
 this does not support multiple memorgy segments though, only current. 
 
 # Functions
