@@ -18,6 +18,7 @@ def tokenise(text):
 
 class MemorySegment():
 	def __init__(self,name,size):
+		raise NameError("No longer being developed, this version has not finished being debugged")
 		self.name = name
 		self.size = size
 		self.data = [0]*size
@@ -331,33 +332,3 @@ class VM():
 		line = re.sub(r'\s*$',r'',line)
 		message = msg + " ("+line+")"
 		raise ValueError(message)
-
-if __name__ == "__main__":
-	machine = VM(1024, 1000)
-	machine.loadCode('''
-memLoad 0 3 4 6
-memLoad 3 7 7 7
-set r0 0
-set r3 0
-set r5 0
-set r4 5
-define leq
-    set r0 r2:
-    set r3 1
-end
-define quit
-    set r5 1
-end
-add r0 1 r1
-add r1 1 r2
-sub *r1: *r0: *r1:
-cmp *r1: <= 0 leq
-skip r3
-add r2 1 r0
-set r3 0
-cmp r0 > r4 quit
-skip r5
-jump -9
-	''')
-	machine.run()
-	print(machine.memory.data)

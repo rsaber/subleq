@@ -26,7 +26,6 @@ def BFD():
 				return render_template("index.html", memory=machine.memoryToHTML())
 			# Compile code and run
 			code = languages.subleq.subleqCompile(rawCode)
-			print(code)
 			machine.loadCode(code)
 			machine.run()
 			return render_template("index.html", inputCode=rawCode, memory=machine.memoryToHTML())
