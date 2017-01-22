@@ -29,53 +29,6 @@
         <script src="{{ url_for('static', filename='lib/codemirror.js')}}"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='lib/codemirror.css') }}">
         <script src="{{url_for('static', filename='mode/javascript/javascript.js')}}"></script>
-        <script type="text/javascript">
-            function switchTo(s){
-                inHeading = document.getElementById('in')
-                memHeading = document.getElementById('mem')
-                challHeading = document.getElementById('chall')
-                elem = document.getElementById('sideContent')
-                if(s == "instructions"){
-                    inHeading.style.opacity = 1
-                    memHeading.style.opacity = 0.1
-                    challHeading.style.opacity = 0.1
-                    elem.innerHTML = "<div class=\"col-md-3\"> <h5><strong>subleq A B C</strong></h5> </div> <div class=\"col-md-7 col-md-offset-2\"> <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>line C</strong></p><h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5> </div>"
-                }
-                if(s == "memory"){
-                    inHeading.style.opacity = 0.1
-                    memHeading.style.opacity = 1
-                    challHeading.style.opacity = 0.1
-                    elem.innerHTML = "\
-                    <table class=\"table table-whitetext\">\
-                      <thead>\
-                        <tr>\
-                          <th></th>\
-                          {% for i in range(0,machine.length) %}\
-                            <th>{{'%x' % i}}</th>\
-                          {% endfor %}\
-                        </tr>\
-                      </thead>\
-                      <tbody>\
-                        {% for row in range(0,machine.height)%}\
-                            <tr>\
-                              <th scope=\"row\">{{'%x'% row}}</th>\
-                              {% for i in range(0,machine.length)%}\
-                                <td><input type=\"text\" class=\"form-control form-control-black\" placeholder=\"{{'%x' % machine.readMem(row + i)}}\"></td>\
-                              {% endfor %}\
-                            </tr>\
-                        {% endfor %}\
-                      </tbody>\
-                    </table>\
-                    "
-                }
-                if(s == "challenges"){
-                    inHeading.style.opacity = 0.1
-                    memHeading.style.opacity = 0.1
-                    challHeading.style.opacity = 1
-                    elem.innerHTML = "<h3>challenge #{{challenge.id}}</h3><hr><p>{{challenge.text}}</p><hr>"
-                }
-            }
-        </script>
         <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-theme.min.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
 
@@ -104,17 +57,44 @@
                         <button type="button" class="editorButton" style="margin-left:10px">submit</button>
                     </h3>
                     <hr>
-                    <textarea id="editor"></textarea>
+
+                    <table class="table table-whitetext">
+                      <thead>
+                        <tr>
+                          <th></th>
+                          {% for i in range(0,machine.length) %}
+                            <th>{{'%x' % i}}</th>
+                          {% endfor %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in range(0,machine.height)%}
+                            <tr>
+                              <th scope="row">{{'%x'% row}}</th>
+                              {% for i in range(0,machine.length)%}
+                                <td><input type="text" class="form-control form-control-black" placeholder="{{'%x' % machine.readMem(row + i)}}"></td>
+                              {% endfor %}
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+
+                    <h3>Program Counter:</h3><input type="text" class="form-control form-control-black" placeholder="{{'%x' % machine.readPC()}}">
+
                 </div>
                 <div class="col-md-6">
-                    <div class="row">
-                        <div id="mem" class="col-md-3" onclick="switchTo('memory')" style="text-align: center; opacity: 0.1"><h3> Memory </h3></div>
-                        <div id="in" class="col-md-5" onclick="switchTo('instructions')" style="text-align: center; opacity: 0.1"><h3> Instructions </h3></div>
-                        <div id="chall" class="col-md-4" onclick="switchTo('challenges')" style="text-align: center; opacity: 1"><h3> Challange </h3></div>
-                    </div>
-                    <hr>
-                    <div id="sideContent">
-                        <h3>challenge #{{challenge.id}}</h3><hr><p>{{challenge.text}}</p><hr>
+                    <div>
+                        <h3>challenge #{{challenge.id}}</h3><hr><p>{{challenge.text}}</p>
+                        <hr>
+                        <br><br><br><br>
+                        <h3>instructions</h3><hr>
+                        <div class="col-md-3">
+                            <h5><strong>subleq A B C</strong></h5>
+                        </div>
+                        <div class="col-md-7 col-md-offset-2">
+                            <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>line C</strong></p>
+                            <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -140,7 +120,7 @@
         });
         </script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"></script>')</script>
         <script src="{{url_for('static', filename='js/vendor/bootstrap.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/main.js')}}"></script>
     </body>
