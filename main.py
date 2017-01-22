@@ -16,15 +16,24 @@ def index():
 def challenge_page(challenge_number):
     challenge = getChallengeTextFromNumber(challenge_number)
 
+    m = Machine(length=16,height=16)
+
+    return render_template("challenge.html", challenge = challenge, all_challenges = challenges, machine = m)
+
+@app.route("/<int:challenge_number>", methods = ['POST'])
+def submit(challenge_number):
+    challenge = getChallengeTextFromNumber(challenge_number)
+
     #if request.method == 'POST':
+
     return render_template("challenge.html", challenge = challenge, all_challenges = challenges)
+
 
 def getChallengeTextFromNumber(number):
     for c in challenges:
         if c['id'] == number:
             return c
     return None
-
 
 if __name__ == "__main__":
     app.run()

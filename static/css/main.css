@@ -1,3 +1,8 @@
+.table-whitetext{
+	font-family: 'Space Mono', monospace;
+    color: #DFDFDF;
+}
+
 body {
 	  background: #090A0F;
 	  overflow:hidden; /* Hacky as */

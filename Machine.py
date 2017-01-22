@@ -1,9 +1,13 @@
 import re
 
 class Machine():
-    def __init__(self, size):
-        self.memory = [0]*size
-        self.size = size
+    def __init__(self, length, height):
+        self.memory = [0]*length*height
+        
+        self.size = length*height;
+        self.length = length
+        self.height = height
+
         self.pc = 0
         self.instruction = {
             'a' : 0,
