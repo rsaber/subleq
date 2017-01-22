@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="../css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
         <style>
             body {
                 padding-top: 20px;
@@ -26,9 +26,9 @@
           .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
         </style>
 
-        <script src="../lib/codemirror.js"></script>
-        <link rel="stylesheet" href="../lib/codemirror.css">
-        <script src="../mode/javascript/javascript.js"></script>
+        <script src="{{ url_for('static', filename='lib/codemirror.js')}}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='lib/codemirror.css') }}">
+        <script src="{{url_for('static', filename='mode/javascript/javascript.js')}}"></script>
         <script type="text/javascript">
             function switchTo(s){
                 inHeading = document.getElementById('in')
@@ -51,16 +51,16 @@
                     inHeading.style.opacity = 0.1
                     memHeading.style.opacity = 0.1
                     challHeading.style.opacity = 1
-                    elem.innerHTML = "<h3>challenge #{{challenge.number}}</h3><hr><p>{{challenge.text}}</p><hr>"
+                    elem.innerHTML = "<h3>challenge #{{challenge.id}}</h3><hr><p>{{challenge.text}}</p><hr>"
                 }
             }
         </script>
-        <link rel="stylesheet" href="../css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="../css/main.css">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-theme.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
 
         <link href="https://fonts.googleapis.com/css?family=Space+Mono:400,400i,700" rel="stylesheet">
 
-        <script src="../js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="{{url_for('static', filename='js/vendor/modernizr-2.8.3-respond-1.4.2.min.js')}}"></script>
     </head>
     <body style="overflow: scroll;">
         <div id='stars'></div>
@@ -93,7 +93,7 @@
                     </div>
                     <hr>
                     <div id="sideContent">
-                        <h2>Click on a heading to begin the puzzle</h2>
+                        <h3>challenge #{{challenge.id}}</h3><hr><p>{{challenge.text}}</p><hr>
                     </div>
                 </div>
             </div>
@@ -101,14 +101,13 @@
         <div class="row" style="padding-top: 2%;">
             <h4 class='text-center'>List of Challenges</h4>
             <h4 class='text-center'>
-                <strong>1</strong>
-                <a href='http://www.google.com'>2</a>
-                <a href='http://www.google.com'>3</a>
-                <a href='http://www.google.com'>4</a>
-                <a href='http://www.google.com'>5</a>
-                <a href='http://www.google.com'>6</a>
-                <a href='http://www.google.com'>7</a>
-                <a href='http://www.google.com'>8</a>
+                {% for c in challenges %}
+                    {% if c.id == challenge.id %}
+                        <strong>{{challenge.id}}</strong>
+                    {% else %}
+                        <a href='/{{c.id}}'>{{c.id}}</a>
+                    {% endif %}
+                {% endfor %}
             </h4>
         </div>
         <script>
@@ -121,7 +120,7 @@
         </script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
-        <script src="../js/vendor/bootstrap.min.js"></script>
-        <script src="../js/main.js"></script>
+        <script src="{{url_for('static', filename='js/vendor/bootstrap.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/main.js')}}"></script>
     </body>
 </html>

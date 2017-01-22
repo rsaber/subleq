@@ -18,7 +18,7 @@ class Machine():
 
     def execute(self):
         # subleq a, b, c   ; Mem[b] = Mem[b] - Mem[a]
-        # if (Mem[b] ≤ 0) goto c
+        # if (Mem[b] <= 0) goto c
 
         if self.instruction['a'] < 0 or self.instruction['b'] < 0:
             self.pc -= 1
@@ -56,7 +56,8 @@ class Machine():
         self.pc = startPC
         for line in code:
             m = re.match(r'subleq\s(\d+)\s(\d+)\s(\d+)',line)
-            raise ValueError('Invalid Command') if m is None
+            if m is None:
+                raise ValueError('Invalid Command')
             a = int(m.group(1))
             b = int(m.group(2))
             c = int(m.group(3))
@@ -68,3 +69,4 @@ class Machine():
 
 if __name__ == "__main__":
     # do tests here
+    print("test")
