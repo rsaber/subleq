@@ -72,21 +72,25 @@
                             <tr>
                               <th scope="row">{{'%x'% row}}</th>
                               {% for i in range(0,machine.length)%}
-                                <td><input type="text" class="form-control form-control-black" placeholder="{{'%x' % machine.readMem(row + i)}}"></td>
+                                <td><input type="text" class="form-control form-control-black" placeholder="{{'%X' % machine.readMem(row + i)}}"></td>
                               {% endfor %}
                             </tr>
                         {% endfor %}
                       </tbody>
                     </table>
 
-                    <h3>Program Counter:</h3><input type="text" class="form-control form-control-black" placeholder="{{'%x' % machine.readPC()}}">
+                    <h3>Program Counter:</h3><input type="text" class="form-control form-control-black" placeholder="{{'%X' % machine.readPC()}}">
 
                 </div>
                 <div class="col-md-6">
                     <div>
-                        <h3>challenge #{{challenge.id}}</h3><hr><p>{{challenge.text}}</p>
+                        <h3>challenge #{{challenge.id}}</h3>
                         <hr>
-                        <br><br><br><br>
+                        <p>{{challenge.text}}</p>
+
+                        <hr>
+                        <br><br>
+
                         <h3>instructions</h3><hr>
                         <div class="col-md-3">
                             <h5><strong>subleq A B C</strong></h5>
@@ -95,6 +99,17 @@
                             <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>line C</strong></p>
                             <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5>
                         </div>
+
+                        <hr>
+                        <br><br>
+
+                        <h3>submission details</h3>
+                        <hr>
+                        <p>
+                            {% if submission is none %}
+                            <p>You have not submitted yet</p>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>

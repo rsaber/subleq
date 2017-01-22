@@ -26,7 +26,7 @@ def submit(challenge_number):
 
     #if request.method == 'POST':
 
-    return render_template("challenge.html", challenge = challenge, all_challenges = challenges)
+    return render_template("challenge.html", challenge = challenge, all_challenges = challenges, submission=None)
 
 
 def getChallengeTextFromNumber(number):
