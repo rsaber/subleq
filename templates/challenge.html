@@ -51,16 +51,16 @@
                         <tr>\
                           <th></th>\
                           {% for i in range(0,machine.length) %}\
-                            <th>{{i}}</th>\
+                            <th>{{'%x' % i}}</th>\
                           {% endfor %}\
                         </tr>\
                       </thead>\
                       <tbody>\
                         {% for row in range(0,machine.height)%}\
                             <tr>\
-                              <th scope=\"row\">{{row}}</th>\
+                              <th scope=\"row\">{{'%x'% row}}</th>\
                               {% for i in range(0,machine.length)%}\
-                                <td>{{machine.readMem(row + i)}}</td>\
+                                <td>{{'%x' % machine.readMem(row + i)}}</td>\
                               {% endfor %}\
                             </tr>\
                         {% endfor %}\
