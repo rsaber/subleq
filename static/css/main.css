@@ -1,7 +1,24 @@
 .table-whitetext{
 	font-family: 'Space Mono', monospace;
     color: #DFDFDF;
+    background-color: #0F0F0F;
 }
+
+input {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    line-height: 1 !important;
+}
+
+.form-control{
+    background-color: #000;
+}
+
+td {margin: 0 !important; padding: 0 !important;}
 
 body {
 	  background: #090A0F;

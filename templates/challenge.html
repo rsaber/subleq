@@ -60,7 +60,7 @@
                             <tr>\
                               <th scope=\"row\">{{'%x'% row}}</th>\
                               {% for i in range(0,machine.length)%}\
-                                <td>{{'%x' % machine.readMem(row + i)}}</td>\
+                                <td><input type=\"text\" class=\"form-control form-control-black\" placeholder=\"{{'%x' % machine.readMem(row + i)}}\"></td>\
                               {% endfor %}\
                             </tr>\
                         {% endfor %}\
