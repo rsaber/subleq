@@ -22,7 +22,7 @@ class MemorySegment():
 		self.size = size
 		self.data = [0]*size
 	def write(self, address, data):
-		if address >= 0 and address < self.size-1:
+		if address >= 0 and address <= self.size-1:
 			if type(data) == list:
 				if address + len(data) > self.size-1:
 					self.raiseError("Attempt to write to beyond memory bounds")
@@ -311,6 +311,23 @@ class VM():
 			return int(param)
 		else:
 			self.raiseError("Command refused input: " + param)
+	# only does main memory at the moment. 
+	def memoryToHTML(self):
+		memory = self.memory.data
+		html = []
+		html.append("<style>")
+		html.append('.rwd-table {  margin: 1em 0;  min-width: 300px;}.rwd-table tr {  border-top: 1px solid #ddd;  border-bottom: 1px solid #ddd;}.rwd-table th {  display: none;}.rwd-table td {  display: block;}.rwd-table td:first-child {  padding-top: .5em;}.rwd-table td:last-child {  padding-bottom: .5em;}.rwd-table td:before {  content: attr(data-th) \'\';  font-weight: bold;  width: 6.5em;  display: inline-block;}@media (min-width: 480px) {  .rwd-table td:before {    display: none;  \}\}.rwd-table th, .rwd-table td {  text-align: left;}@media (min-width: 480px) {  .rwd-table th, .rwd-table td {    display: table-cell;    padding: .25em .5em;  }  .rwd-table th:first-child, .rwd-table td:first-child {    padding-left: 0;  }  .rwd-table th:last-child, .rwd-table td:last-child {    padding-right: 0;  \}\}.rwd-table {  background: rgba(52,73,94,0.6);  color: #fff;  border-radius: .4em;  overflow: hidden;}.rwd-table tr {  border-color: #46637f;}.rwd-table th, .rwd-table td {  margin: .5em 1em;}@media (min-width: 480px) {  .rwd-table th, .rwd-table td {    padding: 1em !important;  \}\}.rwd-table th, .rwd-table td:before {  color: #dd5;}')
+		html.append("</style>")
+		html.append("<table class='rwd-table' style='margin-bottom: 0px;'>")
+		html.append("<tr><td><span style='color: #dd5'>0</span></td>")
+		for i,cell in enumerate(memory):
+			if i % 14 == 0 and i != 0:
+				html.append("</tr><tr><td><span style='color: #dd5'>"+str(i)+"</span></td>")
+			html.append("<td>" + str(cell) + "</td>")
+		html.append("</tr>")
+		html.append("</table>")
+		return "".join(html)
+
 	def raiseError(self, msg, **optional):
 		line = self.code[self.pc].split('.')[1]
 		line = re.sub(r'[\[\]\(\)\',]',r' ',line)

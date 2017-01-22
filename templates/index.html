@@ -45,7 +45,7 @@
                     inHeading.style.opacity = 0.1
                     memHeading.style.opacity = 1
                     challHeading.style.opacity = 0.1
-                    elem.innerHTML = "{{memory}}"
+                    elem.innerHTML = "{{memory|safe}}"
                 }
                 if(s == "challanges"){
                     inHeading.style.opacity = 0.1
@@ -92,7 +92,7 @@
                         <div id="in" class="col-md-5" onclick="switchTo('instructions')" style="text-align: center; opacity: 0.1"><h3> Instructions </h3></div>
                         <div id="chall" class="col-md-4" onclick="switchTo('challanges')" style="text-align: center; opacity: 1"><h3> Challange </h3></div>
                     </div>
-                    <hr>
+                    <hr style="margin-top: 10px;">
                     <div id="sideContent">
                         <h3>challenge #1</h3><hr>
                         <p>Your First challenge is to write a program that adds two numbers together.

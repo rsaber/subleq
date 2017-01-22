@@ -8,23 +8,28 @@ app.secret_key = 'FUCK YOU SHOULD NOT BE SEEING THIS'
 # Main page
 @app.route('/', methods=['GET', 'POST'])
 def BFD():
+	# Set up initial machine state
+	machine = VM.VM(84,1000)
+	machine.memory.write(82,5)
+	machine.memory.write(83,6)
+
+	# On initial connection / reload
 	if request.method == "GET":
-		return render_template("index.html")
+		return render_template("index.html", memory=machine.memoryToHTML())
+	# On reciving a request to run the code
 	else:
 		if "run" in request.form:
+			# Check for no code
 			rawCode = request.form["code"]
+			if rawCode == "":
+				return render_template("index.html", memory=machine.memoryToHTML())
+			# Compile code and run
 			code = languages.subleq.subleqCompile(rawCode)
-			machine = VM.VM(16,1000)
 			machine.loadCode(code)
 			machine.run()
-			return render_template("index.html", inputCode=rawCode, memory=memoryToHTML())
-		elif "submit" in request.form:
-			raise ValueError("unexpected request")
+			return render_template("index.html", inputCode=rawCode, memory=machine.memoryToHTML())
 		else:
 			raise ValueError("unexpected request")
 
-# This needs to consider that the memory exists before the VM sets up (it has the input numbers in)
-def memoryToHTML():
-	return 0
 if __name__ == '__main__':
     app.run(debug=True)
