@@ -35,7 +35,7 @@ class MemorySegment():
 		else:
 			self.raiseError("Attempt to access non-existant memory")
 	def read(self, address):
-		if address >= 0 and address < self.size-1:
+		if address >= 0 and address <= self.size-1:
 			return self.data[address]
 		else:
 			self.raiseError("Attempt to access non-existant memory")
@@ -73,7 +73,7 @@ class VM():
 		}
 		self.cycles = 0
 		self.skipCurr = False
-
+		self.debug = False
 	# Load in some code
 	def loadCode(self, code):
 		codeArray = code.split('\n')
@@ -90,7 +90,6 @@ class VM():
 			self.raiseError("Virtual Machine has no code loaded in to run")
 		while self.finished == False:
 			self.incCycles()
-			print(self.code[self.pc])
 			if self.skipCurr == True:
 				self.skipCurr = False
 			elif self.code[self.pc] == "self.end([''])":
@@ -110,7 +109,6 @@ class VM():
 	def set(self, params):
 		a = params[0]
 		b = params[1]
-		print("setting " + a + " to " + str(self.getVal(b)))
 		self.setVal(a, self.getVal(b))
 	def sub(self, params):
 		a = params[0]
@@ -121,7 +119,6 @@ class VM():
 		a = params[0]
 		b = params[1]
 		c = params[2]
-		print(c)
 		self.setVal(c, self.getVal(a) + self.getVal(b))
 	def memLoad(self, params):
 		address = params[0]
@@ -130,7 +127,6 @@ class VM():
 		a = self.getVal(params[0])
 		b = params[1]
 		c = self.getVal(params[2])
-		print(str(a) + " " + b + " " + str(c))
 		sub = [params[3]]
 		if b == '>' and a > c:
 			self.runFunction(sub)
@@ -361,7 +357,7 @@ add r2 1 r0
 set r3 0
 cmp r0 > r4 quit
 skip r5
-jump -8
+jump -9
 	''')
 	machine.run()
 	print(machine.memory.data)

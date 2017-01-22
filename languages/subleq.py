@@ -53,7 +53,7 @@ def subleqCompile(rawCode):
 	result.append('set r3 0')
 	result.append('cmp r0 > r4 quit')
 	result.append('skip r5')
-	result.append('jump -8')
+	result.append('jump -9')
 
 	return "\n".join(result)
 

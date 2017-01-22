@@ -9,7 +9,8 @@ app.secret_key = 'FUCK YOU SHOULD NOT BE SEEING THIS'
 @app.route('/', methods=['GET', 'POST'])
 def BFD():
 	# Set up initial machine state
-	machine = VM.VM(84,1000)
+	machine = VM.VM(84,100)
+	machine.debug = True
 	machine.memory.write(82,5)
 	machine.memory.write(83,6)
 
@@ -25,6 +26,7 @@ def BFD():
 				return render_template("index.html", memory=machine.memoryToHTML())
 			# Compile code and run
 			code = languages.subleq.subleqCompile(rawCode)
+			print(code)
 			machine.loadCode(code)
 			machine.run()
 			return render_template("index.html", inputCode=rawCode, memory=machine.memoryToHTML())
