@@ -1,4 +1,5 @@
 import re
+import json
 
 class Machine():
     def __init__(self, length, height):
@@ -29,7 +30,7 @@ class Machine():
         else:
             self.memory[self.instruction['b']] -= self.memory[self.instruction['a']]
 
-            if self.memory[self.instructuction['b'] <= 0]:
+            if self.memory[self.instruction['b']] <= 0:
                 self.pc = self.instruction['c']
             else:
                 self.pc += 3
@@ -55,6 +56,15 @@ class Machine():
         if self.size < index or index < 0:
             return ValueError('Index out of range')
         self.memory[index] = value
+    # returns the machine state as a json object
+    def json(self):
+        result = {}
+        result['pc'] = self.pc
+        result['len'] = self.length
+        result['height'] = self.height
+        for i,c in enumerate(self.memory):
+            result[str(i)] = c
+        return json.dumps(result)
 
     def loadInstructions(self, code, startPC = 0):
         self.pc = startPC

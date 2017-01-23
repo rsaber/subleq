@@ -30,7 +30,8 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='lib/codemirror.css') }}">
         <script src="{{url_for('static', filename='mode/javascript/javascript.js')}}"></script>
         <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-theme.min.css')}}">
-        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}?v=9">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}?v={{tag}}">
+        <script type="text/javascript" src="{{url_for('static', filename='js/main.js')}}?v={{tag}}"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Space+Mono:400,400i,700" rel="stylesheet">
 
@@ -45,16 +46,16 @@
                 <div class="col-md-12">
                     <h1 class="text-right">subleq</h1>
                     <h4 class="text-right">a series of puzzles</h4>
-                    <h5 class="text-right">written by <a href='http://www.riyasatsaber.com'>riyasat saber</a></h5>
+                    <h5 class="text-right">written by <a href='http://www.riyasatsaber.com'>riyasat saber</a> and <a href='http://www.zainafzal.com'>zain afzal</a> </h5>
                     <hr><br><br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-7">
                     <h3>Editor
-                        <button type="button" class="editorButton" style="margin-left:10px">run</button>
-                        <button type="button" class="editorButton" style="margin-left:10px">step</button>
-                        <button type="button" class="editorButton" style="margin-left:10px">submit</button>
+                        <button type="button" class="editorButton" style="margin-left:10px" onclick="run{{machine.length, machine.height}}">run</button>
+                        <button type="button" class="editorButton" style="margin-left:10px" onclick="step{{machine.length, machine.height}}">step</button>
+                        <button type="button" class="editorButton" style="margin-left:10px" onclick="submit{{machine.length, machine.height}}">submit</button>
                     </h3>
                     <hr>
 
@@ -73,9 +74,9 @@
                               <th scope="row" style="color: #337ab7">{{'%x'% row}}</th>
                               {% for i in range(0,machine.length)%}
                                 {% if row*machine.length+i != machine.readPC()%}
-                                <td onclick="this.childNodes[0].focus()"><input type="text" size="2" style="outline: none; text-align: center; background-color: rgba(0,0,0,0); color: #FFFFFF;" value="0" maxlength="4"></input></td>
+                                <td onclick="this.childNodes[0].focus()"><input id="{{row*machine.length + i}}" type="text" size="2" style="outline: none; text-align: center; background-color: rgba(0,0,0,0); color: #FFFFFF;" value="0" maxlength="4"></input></td>
                                 {% else %}
-                                <td onclick="this.childNodes[0].focus()" style="background-color: rgba(51,122,183,0.2)"><input type="text" size="2" style="outline: none; text-align: center; background-color: rgba(0,0,0,0); color: #FFFFFF;" value="0" maxlength="4"></input></td>
+                                <td onclick="this.childNodes[0].focus()" style="background-color: rgba(51,122,183,0.2)"><input id="{{row*machine.length + i}}" name="pc" type="text" size="2" style="outline: none; text-align: center; background-color: rgba(0,0,0,0); color: #FFFFFF;" value="0" maxlength="4"></input></td>
                                 {% endif %}
                               {% endfor %}
                             </tr>
@@ -134,6 +135,5 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"></script>')</script>
         <script src="{{url_for('static', filename='js/vendor/bootstrap.min.js')}}"></script>
-        <script src="{{url_for('static', filename='js/main.js')}}"></script>
     </body>
 </html>
