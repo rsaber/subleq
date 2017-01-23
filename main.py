@@ -16,7 +16,7 @@ def index():
 def challenge_page(challenge_number):
     challenge = getChallengeTextFromNumber(challenge_number)
 
-    m = Machine(length=16,height=16)
+    m = Machine(length=10,height=8)
 
     return render_template("challenge.html", challenge = challenge, all_challenges = challenges, machine = m)
 
@@ -36,4 +36,4 @@ def getChallengeTextFromNumber(number):
     return None
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
