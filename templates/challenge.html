@@ -55,23 +55,15 @@
                     <h3>Editor
                         <button type="button" class="editorButton" style="margin-left:10px" onclick="run{{machine.length, machine.height}}">run</button>
                         <button type="button" class="editorButton" style="margin-left:10px" onclick="step{{machine.length, machine.height}}">step</button>
-                        <button type="button" class="editorButton" style="margin-left:10px" onclick="submit{{machine.length, machine.height}}">submit</button>
+                        <button type="button" class="editorButton" style="margin-left:10px" onclick="submit{{machine.length, machine.height,challenge.id}}">submit</button>
                     </h3>
                     <hr>
 
                     <table class="rwd-table" style="width: 100%;">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          {% for i in range(0,machine.length) %}
-                            <th style="color: #337ab7;text-align: center;">{{'%x' % i}}</th>
-                          {% endfor %}
-                        </tr>
-                      </thead>
                       <tbody>
                         {% for row in range(0,machine.height)%}
                             <tr>
-                              <th scope="row" style="color: #337ab7">{{'%x'% row}}</th>
+                              <th scope="row" style="color: #337ab7">{{(row*machine.length)}}</th>
                               {% for i in range(0,machine.length)%}
                                 {% if row*machine.length+i != machine.readPC()%}
                                 <td onclick="this.childNodes[0].focus()"><input id="{{row*machine.length + i}}" type="text" size="2" style="outline: none; text-align: center; background-color: rgba(0,0,0,0); color: #FFFFFF;" value="0" maxlength="4"></input></td>
@@ -97,6 +89,7 @@
                         </div>
                         <div class="col-md-7 col-md-offset-2">
                             <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>line C</strong></p>
+                            <p> a command with input -1 -1 -1 is interperted as "stop" </p>
                             <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5>
                         </div>
                     </div>

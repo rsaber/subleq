@@ -10,6 +10,18 @@ function step(len,height){
 	$.get("/step",currState,function(r){setState(r)}, 'json');
 }
 
+function submit(len,height,chall){
+	var maxCell = len*height;
+	currState = {};
+	for(i = 0; i < maxCell; i++){
+		currState[i] = document.getElementById(i.toString()).value;
+	}
+	currState.pc = document.getElementsByName('pc')[0].id;
+	currState.len = len;
+	currState.height = height;
+	$.get("/test/"+chall.toString(),currState,function(r){}, 'json');
+}
+
 function setState(response){
 	var maxCell = response.len*response.height;
 	for(i = 0; i < maxCell; i++){
