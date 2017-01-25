@@ -58,6 +58,9 @@
                         <button type="button" data-toggle="popover" title="lol" data-content="fight me" class="editorButton" style="margin-left:10px" onclick="run{{machine.length, machine.height}}">run</button>
                         <button type="button" class="editorButton" style="margin-left:10px" onclick="step{{machine.length, machine.height}}">step</button>
                         <button type="button" class="editorButton" style="margin-left:10px" onclick="submit{{machine.length, machine.height,challenge.id}}">submit</button>
+                        <button type="button" class="editorButton" style="margin-left:10px" onclick="memClear{{machine.length, machine.height}}">clear</button>
+                        <button type="button" class="editorButton" style="margin-left:10px" onclick="pcReset{{machine.length, machine.height}}">reset</button>
+
                     </h3>
                     <hr>
 
@@ -94,15 +97,6 @@
                             <p> a command with input -1 -1 -1 is interperted as "stop" </p>
                             <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5>
                         </div>
-                    </div>
-                    <div class="row" style="padding-top: 3%">
-                        <h3>Submission details</h3>
-                        <hr>
-                        <p>
-                            {% if submission is none %}
-                            <p>You have not submitted yet</p>
-                            {% endif %}
-                        </p>
                     </div>
                 </div>
             </div>

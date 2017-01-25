@@ -10,6 +10,22 @@ function step(len,height){
 	$.get("/step",currState,function(r){setState(r)}, 'json');
 }
 
+function memClear(len,height){
+	var maxCell = len*height;
+	for(i = 0; i < maxCell; i++){
+		document.getElementById(i.toString()).value = 0;
+	}
+}
+
+function pcReset(){
+	// unset previous pc cell
+	document.getElementsByName('pc')[0].parentNode.style.backgroundColor = "";
+	document.getElementsByName('pc')[0].name = ''
+	// set new pc cell
+	document.getElementById('0').parentNode.style.backgroundColor = "rgba(51,122,183,0.2)";
+	document.getElementById('0').name = 'pc';
+}
+
 function submit(len,height,chall){
 	var maxCell = len*height;
 	currState = {};
