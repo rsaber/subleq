@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 import json
 import time
 from Machine import Machine
-
+import copy
 from challengelist import challenges
 
 app = Flask(__name__)
@@ -29,15 +29,56 @@ def step():
     maxCell = int(request.args['len']) * int(request.args['height'])
     for i in range(0,maxCell):
         machine.memory[i] = int(request.args[str(i)])
-    # step foward one bit of code
-    machine.step()
-    # return the encoded machine state
-    return machine.json()
+    # Keep a copy of this machine
+    machineCopy = copy.deepcopy(machine)
+    # Step foward one bit of code
+    error = None
+    try:
+        machine.fetch()
+        machine.execute()
+    except ValueError as e:
+        if str(e) != "HALT":
+            error = str(e)
+            # if an error occured revert the machine state back. 
+            machine = machineCopy
+    # Return the encoded machine state
+    return machine.json(error)
 
 @app.route("/test/<int:challenge_number>", methods=['GET'])
 def testCode(challenge_number):
-    results = test(getChallengeTextFromNumber(challenge_number), request)
-    return json.dumps({"output" : results[1]})
+    errors = None
+    try: 
+        results = test(getChallengeTextFromNumber(challenge_number), request)
+        return json.dumps({"output" : results[0]})
+    except ValueError as e:
+        return json.dumps({"error" : str(e)})
+
+@app.route("/run", methods=['GET'])
+def run(challenge_number):
+    # decode the machine state
+    machine = decodeMachineState(request)
+    # Keep a copy of this machine
+    machineCopy = copy.deepcopy(machine)
+    # Run the code
+    error = None
+    try:
+        machine.run()
+    except ValueError as e:
+        if str(e) != "HALT":
+            error = str(e)
+            #if error occured revert machine state
+            machine = machineCopy
+    # return the new state
+    return machine.json(error)
+
+# returns a machien based off a json input outlining the state
+def decodeMachineState(request):
+    machine = Machine(length=int(request.args['len']),height=int(request.args['height']))
+    machine.pc = int(request.args['pc'])
+    maxCell = int(request.args['len']) * int(request.args['height'])
+    for i in range(0,maxCell):
+        machine.memory[i] = int(request.args[str(i)])
+    return machine
 
 def getChallengeTextFromNumber(number):
     for c in challenges:
@@ -54,7 +95,7 @@ def test(challenge, request):
     maxCell = int(request.args['len']) * int(request.args['height'])
     console = []
     # run the tests
-    failed = False
+    passed = True
     for test in challenge['tests']:
         # reset the machine
         machine.reset()
@@ -67,14 +108,20 @@ def test(challenge, request):
         for i in range(0,len(inputs)):
             machine.memory[inputs[i][1]] = inputs[i][0]
         # run the code
-        machine.run()
+        try:
+            machine.run()
+        except ValueError as e:
+            if str(e) != "HALT":
+                raise e
+
         # check the outputs
         for i in range(0,len(outputs)):
             if machine.memory[outputs[i][1]] != outputs[i][0]:
                 console.append("Test " + str(i) + " Failed : cell " + str(outputs[i][1]) + " should be " + str(outputs[i][0]) + " but is " + str(machine.memory[outputs[i][1]]))
-                failed = True
-    if failed == False:
+                passed = False
+    if passed == True:
             console.append("All tests passed, congrats!")
-    return (failed, console)
+    return (passed, console)
+
 if __name__ == "__main__":
     app.run(debug=True)

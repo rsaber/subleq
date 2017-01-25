@@ -19,10 +19,36 @@ function submit(len,height,chall){
 	currState.pc = document.getElementsByName('pc')[0].id;
 	currState.len = len;
 	currState.height = height;
-	$.get("/test/"+chall.toString(),currState,function(r){}, 'json');
+	$.get("/test/"+chall.toString(),currState,function(r){
+		if(r.hasOwnProperty('error')){
+			bootbox.alert({
+				message: r.error,
+				backdrop: true
+			})
+		}
+		else if(r.output == true){
+			bootbox.alert({
+				message: "All Tests Passed!",
+				backdrop: true
+			})
+		}else{
+			console.log(r)
+			bootbox.alert({
+				message: "Test Failed!",
+				backdrop: true
+			})
+		}
+	}, 'json');
 }
 
 function setState(response){
+	if(response.hasOwnProperty('error')){
+		bootbox.alert({
+			message: response.error,
+			backdrop: true
+		})
+		return
+	}
 	var maxCell = response.len*response.height;
 	for(i = 0; i < maxCell; i++){
 		document.getElementById(i.toString()).value = response[i]

@@ -25,15 +25,14 @@ class Machine():
             'b' : 0,
             'c' : 0,
         }
-    # returns true if fetch successful
+    # Returns true if fetch successful ( not halt )
     # false otherwise
     def fetch(self):
-        self.instruction['a'] = self.memory[self.pc]
-        self.instruction['b'] = self.memory[self.pc+1]
-        self.instruction['c'] = self.memory[self.pc+2]
+        self.instruction['a'] = self.readMem(self.pc)
+        self.instruction['b'] = self.readMem(self.pc+1)
+        self.instruction['c'] = self.readMem(self.pc+2)
         if self.instruction['a'] == -1 and self.instruction['b'] == -1 and self.instruction['c'] == -1:
-            return False
-        return True
+            raise ValueError("HALT")
 
     def execute(self):
         # subleq a, b, c   ; Mem[b] = Mem[b] - Mem[a]
@@ -42,23 +41,17 @@ class Machine():
         if self.cycles > self.maxCycles:
             raise ValueError("The Machine has exceeded the maximum number of allowed cycles. Possible Infinite Loop?")
         else:
-            self.memory[self.instruction['b']] -= self.memory[self.instruction['a']]
-            if self.memory[self.instruction['b']] <= 0:
-                self.pc = self.instruction['c']
+            newB = self.readMem(self.instruction['b']) - self.readMem(self.instruction['a'])
+            self.writeMem(newB,self.instruction['b'])
+            if self.readMem(self.instruction['b']) <= 0:
+                self.setPC(self.instruction['c'])
             else:
-                self.pc += 3
-
-    def step(self):
-        if self.fetch():
-            self.execute()
-            return True
-        else:
-            return False
+                self.setPC(self.readPC() + 3)
 
     def run(self):
-        result = True
-        while self.pc <= self.size and result == True:
-            result = self.step()
+        while self.pc <= self.size:
+            self.fetch()
+            self.execute()
 
     def readMem(self, index):
         if index > self.size - 1:
@@ -74,6 +67,11 @@ class Machine():
     def readPC(self):
         return self.pc
 
+    def setPC(self, new):
+        if int(new) < self.size and int(new) >= 0:
+            self.pc = new
+        else:
+            raise ValueError("Index out of range")
     def readCurrentInstruction(self):
         return self.instruction
 
@@ -82,8 +80,10 @@ class Machine():
             raise ValueError('Index out of range')
         self.memory[index] = value
     # returns the machine state as a json object
-    def json(self):
+    def json(self, error):
         result = {}
+        if error:
+            result['error'] = error
         result['pc'] = self.pc
         result['len'] = self.length
         result['height'] = self.height
