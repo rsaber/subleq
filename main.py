@@ -44,6 +44,28 @@ def step():
     # Return the encoded machine state
     return machine.json(error)
 
+@app.route("/run", methods=['GET'])
+def runCode():
+    # decode the machine state
+    machine = Machine(length=int(request.args['len']),height=int(request.args['height']))
+    machine.pc = int(request.args['pc'])
+    maxCell = int(request.args['len']) * int(request.args['height'])
+    for i in range(0,maxCell):
+        machine.memory[i] = int(request.args[str(i)])
+    # Keep a copy of this machine
+    machineCopy = copy.deepcopy(machine)
+    # Run the code
+    error = None
+    try:
+        machine.run()
+    except ValueError as e:
+        if str(e) != "HALT":
+            error = str(e)
+            # if an error occured revert the machine state back. 
+            machine = machineCopy
+    # Return the encoded machine state
+    return machine.json(error)
+
 @app.route("/test/<int:challenge_number>", methods=['GET'])
 def testCode(challenge_number):
     errors = None

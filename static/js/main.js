@@ -10,11 +10,16 @@ function step(len,height){
 	$.get("/step",currState,function(r){setState(r)}, 'json');
 }
 
-function memClear(len,height){
+function run(len,height){
 	var maxCell = len*height;
+	currState = {};
 	for(i = 0; i < maxCell; i++){
-		document.getElementById(i.toString()).value = 0;
+		currState[i] = document.getElementById(i.toString()).value;
 	}
+	currState.pc = document.getElementsByName('pc')[0].id;
+	currState.len = len;
+	currState.height = height;
+	$.get("/run",currState,function(r){setState(r)}, 'json');
 }
 
 function pcReset(){
