@@ -6,12 +6,14 @@ import copy
 from challengelist import challenges
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'f9843yhfiujkhsd837y4rcu43jfhsdufdsfsfj92348r this is fake mate'
+app.config['SECRET_KEY'] = 'gfdsuih45uieyhdgidsu7fhi73e4uyigufdhng'
 
 
 @app.route("/")
 def index():
-    return redirect("/1")
+    challenge = getChallengeTextFromNumber(1)
+    m = Machine()
+    return render_template("challenge.html", challenge = challenge, all_challenges = challenges, machine = m, tag = str(time.time()))
 
 @app.route("/<int:challenge_number>", methods=['GET'])
 def challenge_page(challenge_number):
