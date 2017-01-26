@@ -10,6 +10,12 @@ challenges = [
                 # Test Outputs [a,b] means check if val at b == a
                 [[15,50]]
             ],
+            [
+                # Test Inputs [a,b] means store a in b
+                [[100,50],[-8,51]],
+                # Test Outputs [a,b] means check if val at b == a
+                [[92,50]]
+            ],
         ]
 },
 {

@@ -20,20 +20,11 @@
 
         </style>
 
-        <style>
-          .CodeMirror { height: auto; width:100%; border: 1px solid #ddd; }
-          .CodeMirror-scroll { max-height: 200px; }
-          .CodeMirror pre { padding-left: 7px; line-height: 1.25; }
-        </style>
-
         <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/vendor/bootstrap.min.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='js/bootbox.min.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='js/main.js')}}?v={{tag}}"></script>
         <script src="{{url_for('static', filename='js/vendor/modernizr-2.8.3-respond-1.4.2.min.js')}}"></script>
-        <script src="{{url_for('static', filename='mode/javascript/javascript.js')}}"></script>
-        <script src="{{ url_for('static', filename='lib/codemirror.js')}}"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='lib/codemirror.css') }}">
         <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap-theme.min.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}?v={{tag}}">
         <link href="https://fonts.googleapis.com/css?family=Space+Mono:400,400i,700" rel="stylesheet">
@@ -92,8 +83,8 @@
                             <h5><strong>subleq A B C</strong></h5>
                         </div>
                         <div class="col-md-7 col-md-offset-2">
-                            <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is not positive move program counter to <strong>line C</strong></p>
-                            <p> a command with input -1 -1 -1 is interpreted as "stop" </p>
+                            <p>Subtracts contents at <strong>address A</strong> from contents at <strong>address B</strong>, stores result at <strong>address B</strong>, if result is negative move program counter to <strong> C</strong></p>
+                            <p>An instruction with arguments "-1, -1, -1" is defined as a Halt </p>
                             <h5>That's right. Only one instruction. And it's Turing complete. Good luck.</h5>
                         </div>
                     </div>
@@ -103,7 +94,7 @@
         <div class="row" style="padding-top: 2%;">
             <h4 class='text-center'>List of Challenges</h4>
             <h4 class='text-center'>
-                {% for c in challenges %}
+                {% for c in all_challenges %}
                     {% if c.id == challenge.id %}
                         <strong>{{challenge.id}}</strong>
                     {% else %}
@@ -112,13 +103,5 @@
                 {% endfor %}
             </h4>
         </div>
-        <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-            lineNumbers: true,
-            lineWrapping: true,
-            fixedGutter: false
-
-        });
-        </script>
     </body>
 </html>

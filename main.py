@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import json
 import time
 from Machine import Machine
@@ -11,11 +11,13 @@ app.config['SECRET_KEY'] = 'f9843yhfiujkhsd837y4rcu43jfhsdufdsfsfj92348r this is
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return redirect("/1")
 
 @app.route("/<int:challenge_number>", methods=['GET'])
 def challenge_page(challenge_number):
     challenge = getChallengeTextFromNumber(challenge_number)
+    if challenge is None:
+        return redirect("/1")
     m = Machine()
     return render_template("challenge.html", challenge = challenge, all_challenges = challenges, machine = m, tag = str(time.time()))
 
