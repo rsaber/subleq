@@ -16,9 +16,7 @@ def index():
 @app.route("/<int:challenge_number>", methods=['GET'])
 def challenge_page(challenge_number):
     challenge = getChallengeTextFromNumber(challenge_number)
-    m = Machine(length=10,height=8) 
-    # note that tag is just a unique number so that the broswer is forced to update files like css and js when we change them
-    # rather then ignoring our changes and reading from cache
+    m = Machine()
     return render_template("challenge.html", challenge = challenge, all_challenges = challenges, machine = m, tag = str(time.time()))
 
 @app.route("/step", methods=['GET'])
@@ -29,8 +27,10 @@ def step():
     maxCell = int(request.args['len']) * int(request.args['height'])
     for i in range(0,maxCell):
         machine.memory[i] = int(request.args[str(i)])
+
     # Keep a copy of this machine
     machineCopy = copy.deepcopy(machine)
+
     # Step foward one bit of code
     error = None
     try:
@@ -39,8 +39,9 @@ def step():
     except ValueError as e:
         if str(e) != "HALT":
             error = str(e)
-            # if an error occured revert the machine state back. 
+            # if an error occured revert the machine state back.
             machine = machineCopy
+
     # Return the encoded machine state
     return machine.json(error)
 
@@ -52,6 +53,7 @@ def runCode():
     maxCell = int(request.args['len']) * int(request.args['height'])
     for i in range(0,maxCell):
         machine.memory[i] = int(request.args[str(i)])
+
     # Keep a copy of this machine
     machineCopy = copy.deepcopy(machine)
     # Run the code
@@ -61,7 +63,7 @@ def runCode():
     except ValueError as e:
         if str(e) != "HALT":
             error = str(e)
-            # if an error occured revert the machine state back. 
+            # if an error occured revert the machine state back.
             machine = machineCopy
     # Return the encoded machine state
     return machine.json(error)
@@ -69,7 +71,7 @@ def runCode():
 @app.route("/test/<int:challenge_number>", methods=['GET'])
 def testCode(challenge_number):
     errors = None
-    try: 
+    try:
         results = test(getChallengeTextFromNumber(challenge_number), request)
         return json.dumps({"output" : results[0]})
     except ValueError as e:
@@ -108,7 +110,7 @@ def getChallengeTextFromNumber(number):
             return c
     return None
 
-# returns a tuple, element 0 is a boolean telling you if it passed all the tests ot not 
+# returns a tuple, element 0 is a boolean telling you if it passed all the tests ot not
 # element 1 is a array of output from the testing robot
 def test(challenge, request):
     # decode the machine state
@@ -139,10 +141,10 @@ def test(challenge, request):
         # check the outputs
         for i in range(0,len(outputs)):
             if machine.memory[outputs[i][1]] != outputs[i][0]:
-                console.append("Test " + str(i) + " Failed : cell " + str(outputs[i][1]) + " should be " + str(outputs[i][0]) + " but is " + str(machine.memory[outputs[i][1]]))
+                console.append("Test " + str(i) + " Failed : Cell " + str(outputs[i][1]) + " should be " + str(outputs[i][0]) + ", but is " + str(machine.memory[outputs[i][1]]))
                 passed = False
     if passed == True:
-            console.append("All tests passed, congrats!")
+            console.append("All tests passed!")
     return (passed, console)
 
 if __name__ == "__main__":
